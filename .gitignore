@@ -39,3 +39,28 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# Expo Snack specific
+# Keep only essential files for Snack
+# Remove build artifacts and temporary files
+*.log
+*.tmp
+*.temp
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+
+# Package manager lock files (optional - you might want to keep package-lock.json)
+# package-lock.json
+# yarn.lock
+
+# Expo Snack doesn't need these
+.expo-shared/
+.expo/
