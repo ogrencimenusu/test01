@@ -1,15 +1,15 @@
-# React Native App with Expo Go v54
+# iOS 16 Benzeri Todo Uygulaması
 
-Bu proje Expo Go v54 ve React Native kullanılarak oluşturulmuş modern bir mobil uygulamadır.
+Bu proje Expo Go v54, React Native ve Firebase kullanılarak oluşturulmuş modern bir todo uygulamasıdır. iOS 16 tasarım dilini takip eder.
 
 ## Özellikler
 
-- **Sayaç Uygulaması**: Artırma ve azaltma butonları ile sayı sayma
-- **Todo Listesi**: Görev ekleme, tamamlama ve yönetme
-- **Modern UI**: Gölgeler, yuvarlatılmış köşeler ve renkli tasarım
-- **Alert Sistemi**: Kullanıcı etkileşimi için alert mesajları
-- **ScrollView**: İçerik kaydırma desteği
-- **SafeAreaView**: Güvenli alan desteği
+- **iOS 16 Tasarım**: Apple'ın yeni tasarım dilini takip eden modern arayüz
+- **Firebase Entegrasyonu**: Gerçek zamanlı veri senkronizasyonu
+- **Todo Yönetimi**: Görev ekleme, tamamlama ve silme
+- **Animasyonlar**: Smooth geçişler ve fade efektleri
+- **Responsive Tasarım**: Tüm ekran boyutlarında uyumlu
+- **KeyboardAvoidingView**: Klavye ile uyumlu çalışma
 
 ## Kurulum
 
@@ -18,6 +18,10 @@ Bu proje Expo Go v54 ve React Native kullanılarak oluşturulmuş modern bir mob
    ```bash
    npm install
    ```
+3. Firebase konfigürasyonu:
+   - Firebase Console'da yeni proje oluşturun
+   - Firestore Database'i etkinleştirin
+   - `App.js` dosyasındaki `firebaseConfig` objesini kendi config'inizle değiştirin
 
 ## Çalıştırma
 
