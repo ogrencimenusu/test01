@@ -11,25 +11,9 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
-  Animated
+  Animated,
+  AsyncStorage
 } from 'react-native';
-import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
-
-// Firebase konfigürasyonu (kendi config'inizi buraya ekleyin)
-const firebaseConfig = {
-  apiKey: "AIzaSyCt8nW-195pG2R66FPhK8mdVQiMMSA39qk",
-  authDomain: "portfoy-7a82c.firebaseapp.com",
-  projectId: "portfoy-7a82c",
-  storageBucket: "portfoy-7a82c.firebasestorage.app",
-  messagingSenderId: "988278857233",
-  appId: "1:988278857233:web:e6d649240a11df21231bb0",
-  measurementId: "G-DEYR8W2501"
-};
-
-// Firebase'i başlat
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
 export default function App() {
   const [todos, setTodos] = useState([]);
@@ -45,17 +29,15 @@ export default function App() {
       duration: 800,
       useNativeDriver: true,
     }).start();
-  }, []);
+  }, [fadeAnim]);
 
   const loadTodos = async () => {
     try {
       setLoading(true);
-      const querySnapshot = await getDocs(collection(db, 'todos'));
-      const todosData = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setTodos(todosData);
+      const storedTodos = await AsyncStorage.getItem('todos');
+      if (storedTodos) {
+        setTodos(JSON.parse(storedTodos));
+      }
     } catch (error) {
       console.error('Error loading todos:', error);
     } finally {
@@ -63,43 +45,41 @@ export default function App() {
     }
   };
 
+  const saveTodos = async (todosToSave) => {
+    try {
+      await AsyncStorage.setItem('todos', JSON.stringify(todosToSave));
+    } catch (error) {
+      console.error('Error saving todos:', error);
+    }
+  };
+
   const addTodo = async () => {
     if (newTodo.trim()) {
-      try {
-        const docRef = await addDoc(collection(db, 'todos'), {
-          text: newTodo.trim(),
-          completed: false,
-          createdAt: new Date()
-        });
-        setTodos([...todos, { id: docRef.id, text: newTodo.trim(), completed: false }]);
-        setNewTodo('');
-      } catch (error) {
-        console.error('Error adding todo:', error);
-      }
+      const newTodoItem = {
+        id: Date.now().toString(),
+        text: newTodo.trim(),
+        completed: false,
+        createdAt: new Date().toISOString()
+      };
+      const updatedTodos = [...todos, newTodoItem];
+      setTodos(updatedTodos);
+      await saveTodos(updatedTodos);
+      setNewTodo('');
     }
   };
 
   const toggleTodo = async (id) => {
-    try {
-      const todo = todos.find(t => t.id === id);
-      await updateDoc(doc(db, 'todos', id), {
-        completed: !todo.completed
-      });
-      setTodos(todos.map(todo => 
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      ));
-    } catch (error) {
-      console.error('Error updating todo:', error);
-    }
+    const updatedTodos = todos.map(todo => 
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    );
+    setTodos(updatedTodos);
+    await saveTodos(updatedTodos);
   };
 
   const deleteTodo = async (id) => {
-    try {
-      await deleteDoc(doc(db, 'todos', id));
-      setTodos(todos.filter(todo => todo.id !== id));
-    } catch (error) {
-      console.error('Error deleting todo:', error);
-    }
+    const updatedTodos = todos.filter(todo => todo.id !== id);
+    setTodos(updatedTodos);
+    await saveTodos(updatedTodos);
   };
 
   return (
